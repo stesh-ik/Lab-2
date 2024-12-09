@@ -1,7 +1,8 @@
 import json
 
 
-DATESET_PATH = 'memes_dataset.csv'
+DATASET_PATH = 'memes_dataset.csv'
+OUT_PATH = 'out.json'
 
 def get_title(dataset):
     dataset.seek(0)
@@ -41,6 +42,11 @@ def get_object(line, title):
         result[col] = flied
     return result
 
+def get_object_all(line, title):
+    reader = csv.DictReade([line], title, delimiter=',', quotechar='"')
+    res = next(reader)
+    return res
+
 def filter_year(dataset, title, year):
     filtered = []
 
@@ -54,8 +60,13 @@ def filter_year(dataset, title, year):
 
 
 if __name__ == '__main__':
-    with open(DATESET_PATH) as dataset:
-        title = get_title()
+    with open(DATASET_PATH, encoding="utf8") as dataset:
+        title = get_title(dataset)
+        # line = next(dataset)
+        # res = get_object(line, title)
+        # print(res, len(res))
         res = filter_year(dataset, title, 2008)
-        print(res, len(res))
-        res = 
+        res = json.dumps(res, indent = 4)
+        print(res)
+        with open(OUT_PATH, 'w') as out:
+            out.write(res)
